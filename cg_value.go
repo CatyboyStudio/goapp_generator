@@ -1,5 +1,7 @@
 package goapp_generator
 
+import . "goapp_commons"
+
 type CG_Value struct {
 	class *CG_Class
 
