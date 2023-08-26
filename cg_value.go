@@ -1,6 +1,6 @@
 package goapp_generator
 
-import . "goapp_commons"
+import . "cbsutil/reflext"
 
 type CG_Value struct {
 	class *CG_Class

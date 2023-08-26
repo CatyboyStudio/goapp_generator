@@ -1,8 +1,8 @@
 package goapp_generator
 
 import (
+	. "cbsutil/reflext"
 	"fmt"
-	. "goapp_commons"
 	"reflect"
 )
 

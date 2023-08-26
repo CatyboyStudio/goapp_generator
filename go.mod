@@ -1,3 +1,3 @@
 module goapp_generator
 
-go 1.18
+go 1.21
