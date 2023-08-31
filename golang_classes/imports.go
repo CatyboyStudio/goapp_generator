@@ -2,15 +2,19 @@ package golang_classes
 
 import CG "goapp_generator"
 
+const (
+	BUILDIN = "buildin"
+)
+
 func ImportAll() {
 
-	CG.GoGenPackPath = "github.com/CatyboyStudio/goapp_gpython"
+	CG.GoGenPackPath = CG.APPGPY_PACK
 	CG.GoGenPackName = ""
 
-	CG.GoGenFile = "buildin"
+	CG.GoGenFile = BUILDIN
 
 	vlist := []func() (*CG.Value, *CG.Class){
-		Bool, Int, Int64, Float, String, Error,
+		Bool, Int, Int64, Float32, Float, String, Error,
 	}
 
 	for _, f := range vlist {

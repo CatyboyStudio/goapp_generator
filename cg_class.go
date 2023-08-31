@@ -7,13 +7,14 @@ import (
 	"reflect"
 	"strings"
 
-	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slog"
 )
 
 var type2class map[reflect.Type]*Class = make(map[reflect.Type]*Class)
 
 var name2class map[string]*Class = make(map[string]*Class)
+
+var classes []*Class
 
 func ForClassType(typ reflect.Type) *Class {
 	return type2class[typ]
@@ -47,10 +48,11 @@ func RegisterClass(cls *Class) {
 		}
 		name2class[cls.fullname] = cls
 	}
+	classes = append(classes, cls)
 }
 
 func SelectAllClass() []*Class {
-	return maps.Values(name2class)
+	return classes
 }
 
 type Kind int
@@ -110,6 +112,15 @@ func newProtoClass(k Kind, proto any) *Class {
 	return o
 }
 
+func newTemplateClass(k Kind, template any, fieldName string) *Class {
+	tt := reflect.TypeOf(template)
+	field, ok := tt.FieldByName(fieldName)
+	if !ok {
+		panic(fmt.Sprintf("%T miss Field %s", template, fieldName))
+	}
+	return newTypeClass(k, field.Type)
+}
+
 func newTypeClass(k Kind, typ reflect.Type) *Class {
 	if typ == nil {
 		panic("newTypeClass typ is nil")
@@ -135,6 +146,10 @@ func (th *Class) initClass(typ reflect.Type) {
 
 func (th *Class) Kind() Kind {
 	return th.kind
+}
+
+func (th *Class) ProtoType() reflect.Type {
+	return th.protoType
 }
 
 func (th *Class) NameWithPkg() R.NameWithPkg {
@@ -191,7 +206,7 @@ func (th *Class) GenCode(ws *Workspace) {
 		defer ws.EndGoFile()
 
 		f.Comment(fmt.Sprintf("Class: %s, Kind: %s", th.fullname, th.kind))
-		if g, ok := th.detail.(Generator); ok {
+		if g, ok := th.detail.(GoGenerator); ok {
 			g.GenGoCode(ws)
 		} else {
 			slog.Warn("Nothing to gen")

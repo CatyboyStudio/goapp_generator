@@ -12,6 +12,7 @@ func main() {
 	cfg.RootDirGO = "../../goapp_gpython"
 	cfg.RootdirPY = "../../../pythonlib"
 	cfg.GenFile = true
+	cfg.FilterByGenPkg(CG.APPGPY_PACK, "*", golang_classes.BUILDIN)
 
 	ws := CG.NewWorkspace(cfg)
 	CG.Run(ws)
